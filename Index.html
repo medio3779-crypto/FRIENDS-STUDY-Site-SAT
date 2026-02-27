@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Choose SAT</title>
+<style>
+body{font-family:Arial;text-align:center;background:#f4f6fa;padding-top:100px;}
+h1{color:#333;}
+.box{display:inline-block;width:200px;padding:20px;margin:20px;background:white;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.1);cursor:pointer;transition:transform 0.3s;}
+.box:hover{transform:translateY(-5px);}
+.box img{width:80px;margin-bottom:10px;}
+button{padding:10px 16px;background:#466bb0;color:white;border:none;border-radius:8px;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<h1>Choose Your Exam</h1>
+
+<div class="box" onclick="openSAT()">
+  <img src="https://i.imgur.com/3bK0OKf.png" alt="SAT Icon">
+  <h3>SAT</h3>
+  <button>Open</button>
+</div>
+
+<script>
+function openSAT(){
+    window.location.href = "sat.html";
+}
+</script>
+
+</body>
+</html>
