@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SAT Dashboard</title>
+<style>
+body{font-family:Arial;background:#eef0f5;margin:0;padding:0;}
+header{background:#466bb0;color:white;padding:15px;text-align:center;font-size:24px;}
+.container{max-width:900px;margin:30px auto;display:flex;flex-wrap:wrap;gap:20px;justify-content:center;}
+.block{background:white;padding:20px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.12);flex:1 1 300px;min-width:300px;}
+.block img{width:60px;margin-bottom:10px;}
+.block h2{margin:5px 0;color:#222;}
+.block p{color:#555;}
+input[type="text"],textarea{width:95%;padding:8px;border-radius:6px;border:1px solid #ccc;margin-top:10px;}
+button{padding:8px 16px;background:linear-gradient(135deg,#6a11cb 0%,#2575fc 100%);color:white;border:none;border-radius:6px;margin-top:10px;cursor:pointer;}
+button:hover{transform:translateY(-2px);box-shadow:0 6px 8px rgba(0,0,0,0.3);}
+ul{padding-left:20px;text-align:left;}
+.checked{text-decoration:line-through;color:grey;}
+</style>
+</head>
+<body>
+
+<header>SAT Dashboard</header>
+
+<div class="container">
+
+<!-- Materials -->
+<div class="block">
+  <img src="https://i.imgur.com/7zZbV9u.png" alt="Materials">
+  <h2>Materials</h2>
+  <p>Links and PDF resources</p>
+  <ul>
+    <li><a href="#" target="_blank">Math Notes PDF</a></li>
+    <li><a href="#" target="_blank">English Practice</a></li>
+  </ul>
+</div>
+
+<!-- Quizzes -->
+<div class="block">
+  <img src="https://i.imgur.com/5hVQfFZ.png" alt="Quizzes">
+  <h2>Quizzes</h2>
+  <p>Daily SAT Quiz</p>
+  <button onclick="startQuiz()">Start Quiz</button>
+  <div id="quizResult" style="margin-top:10px;font-weight:bold;"></div>
+</div>
+
+<!-- Mistake Analog -->
+<div class="block">
+  <img src="https://i.imgur.com/X9d7TQr.png" alt="Mistakes">
+  <h2>Mistake Analog</h2>
+  <p>Record your mistakes</p>
+  <input id="mistakeInput" type="text" placeholder="Enter mistake">
+  <button onclick="addMistake()">Add Mistake</button>
+  <ul id="mistakeList"></ul>
+</div>
+
+<!-- Pomodoro -->
+<div class="block">
+  <img src="https://i.imgur.com/3XYp25t.png" alt="Timer">
+  <h2>Pomodoro Timer</h2>
+  <h3 id="timer">25:00</h3>
+  <button onclick="startTimer()">Start</button>
+  <button onclick="resetTimer()">Reset</button>
+</div>
+
+<!-- To-Do List -->
+<div class="block">
+  <img src="https://i.imgur.com/Yy6Y8nY.png" alt="ToDo">
+  <h2>To-Do List</h2>
+  <input id="taskInput" type="text" placeholder="Enter task">
+  <button onclick="addTask()">Add Task</button>
+  <ul id="taskList"></ul>
+</div>
+
+<!-- Notes -->
+<div class="block">
+  <img src="https://i.imgur.com/ITvkhTL.png" alt="Notes">
+  <h2>Notes</h2>
+  <textarea id="notes" rows="6" placeholder="Write your notes..."></textarea>
+  <button onclick="saveNotes()">Save Notes</button>
+</div>
+
+</div>
+
+<script>
+// ====== Tasks ======
+function addTask(){
+  let input=document.getElementById("taskInput");
+  if(input.value==="") return;
+  let li=document.createElement("li");
+  let checkbox=document.createElement("input");
+  checkbox.type="checkbox";
+  checkbox.onclick=function(){li.classList.toggle("checked")};
+  li.appendChild(checkbox);
+  li.appendChild(document.createTextNode(" "+input.value));
+  document.getElementById("taskList").appendChild(li);
+  let tasks=JSON.parse(localStorage.getItem("tasks")||"[]");
+  tasks.push(input.value);
+  localStorage.setItem("tasks",JSON.stringify(tasks));
+  input.value="";
+}
+
+// Load tasks
+window.onload=function(){
+  let tasks=JSON.parse(localStorage.getItem("tasks")||"[]");
+  tasks.forEach(t=>{
+    let li=document.createElement("li");
+    let checkbox=document.createElement("input");
+    checkbox.type="checkbox";
+    checkbox.onclick=function(){li.classList.toggle("checked")};
+    li.appendChild(checkbox);
+    li.appendChild(document.createTextNode(" "+t));
+    document.getElementById("taskList").appendChild(li);
+  });
+
+  // Load mistakes
+  let mistakes=JSON.parse(localStorage.getItem("mistakes")||"[]");
+  mistakes.forEach(m=>{
+    let li=document.createElement("li");
+    li.textContent=m;
+    document.getElementById("mistakeList").appendChild(li);
+  });
+
+  // Load notes
+  let savedNotes=localStorage.getItem("notes");
+  if(savedNotes) document.getElementById("notes").value=savedNotes;
+}
+
+// ====== Mistakes ======
+function addMistake(){
+  let input=document.getElementById("mistakeInput");
+  if(input.value==="") return;
+  let li=document.createElement("li");
+  li.textContent=input.value;
+  document.getElementById("mistakeList").appendChild(li);
+  let mistakes=JSON.parse(localStorage.getItem("mistakes")||"[]");
+  mistakes.push(input.value);
+  localStorage.setItem("mistakes",JSON.stringify(mistakes));
+  input.value="";
+}
+
+// ====== Pomodoro Timer ======
+let time=1500; let timerInterval;
+function startTimer(){
+  clearInterval(timerInterval);
+  timerInterval=setInterval(function(){
+    let minutes=Math.floor(time/60);
+    let seconds=time%60;
+    document.getElementById("timer").innerText=minutes+":"+(seconds<10?"0":"")+seconds;
+    time--;
+    if(time<0){clearInterval(timerInterval);alert("Time's up!");time=1500;document.getElementById("timer").innerText="25:00";}
+  },1000);
+}
+function resetTimer(){clearInterval(timerInterval);time=1500;document.getElementById("timer").innerText="25:00";}
+
+// ====== Notes ======
+function saveNotes(){
+  let notes=document.getElementById("notes").value;
+  localStorage.setItem("notes",notes);
+  alert("Notes saved!");
+}
+
+// ====== Quiz ======
+const quizQuestions=[
+  {q:"Math Question 1?",options:["A","B","C"],answer:"A"},
+  {q:"English Question 1?",options:["True","False"],answer:"True"},
+  {q:"Math Question 2?",options:["A","B","C"],answer:"B"}
+];
+let currentQ=0,score=0;
+function startQuiz(){
+  currentQ=0; score=0; showQuestion();
+}
+function showQuestion(){
+  if(currentQ>=quizQuestions.length){document.getElementById("quizResult").innerText="Quiz Finished! Score: "+score+"/"+quizQuestions.length; localStorage.setItem("quizScore",score); return;}
+  let q=quizQuestions[currentQ];
+  let html="<p>"+q.q+"</p>";
+  q.options.forEach(opt=>{html+="<button onclick=\"checkAnswer('"+opt+"')\">"+opt+"</button> "});
+  document.getElementById("quizResult").innerHTML=html;
+}
+function checkAnswer(ans){
+  if(ans===quizQuestions[currentQ].answer) score++;
+  currentQ++;
+  showQuestion();
+}
+</script>
+
+</body>
+</html>
