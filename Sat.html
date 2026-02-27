@@ -2,25 +2,33 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>SAT Dashboard</title>
+<title>SAT Dashboard - MedLogic Style</title>
 <style>
-body{font-family:Arial;background:#eef0f5;margin:0;padding:0;}
-header{background:#466bb0;color:white;padding:15px;text-align:center;font-size:24px;}
-.container{max-width:900px;margin:30px auto;display:flex;flex-wrap:wrap;gap:20px;justify-content:center;}
-.block{background:white;padding:20px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,0.12);flex:1 1 300px;min-width:300px;}
-.block img{width:60px;margin-bottom:10px;}
-.block h2{margin:5px 0;color:#222;}
-.block p{color:#555;}
-input[type="text"],textarea{width:95%;padding:8px;border-radius:6px;border:1px solid #ccc;margin-top:10px;}
-button{padding:8px 16px;background:linear-gradient(135deg,#6a11cb 0%,#2575fc 100%);color:white;border:none;border-radius:6px;margin-top:10px;cursor:pointer;}
-button:hover{transform:translateY(-2px);box-shadow:0 6px 8px rgba(0,0,0,0.3);}
-ul{padding-left:20px;text-align:left;}
-.checked{text-decoration:line-through;color:grey;}
+body { font-family: Arial, sans-serif; background: #eef0f5; margin: 0; padding: 0; }
+header { background: #466bb0; color: white; padding: 20px; text-align: center; font-size: 28px; font-weight: bold; }
+.container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1000px; margin: 30px auto; }
+.block { background:white; border-radius:12px; padding:20px; box-shadow:0 6px 15px rgba(0,0,0,0.12); transition: transform 0.3s; }
+.block:hover { transform: translateY(-5px); }
+.block img { width:60px; margin-bottom:10px; }
+.block h2 { margin:5px 0; font-size:22px; color:#222; }
+.block p { color:#555; }
+button { padding:8px 16px; border:none; border-radius:6px; cursor:pointer; margin-top:8px; font-weight:bold; color:white; }
+input[type="text"],textarea { width:95%; padding:8px; border-radius:6px; border:1px solid #ccc; margin-top:10px; }
+ul { text-align:left; padding-left:20px; }
+.checked { text-decoration:line-through;color:grey; }
+
+/* Gradient Buttons */
+.materials-btn { background: linear-gradient(135deg,#ff7e5f,#feb47b);}
+.quiz-btn { background: linear-gradient(135deg,#43cea2,#185a9d);}
+.mistake-btn { background: linear-gradient(135deg,#f7971e,#ffd200);}
+.timer-btn { background: linear-gradient(135deg,#6a11cb,#2575fc);}
+.task-btn { background: linear-gradient(135deg,#ff416c,#ff4b2b);}
+.notes-btn { background: linear-gradient(135deg,#11998e,#38ef7d);}
 </style>
 </head>
 <body>
 
-<header>SAT Dashboard</header>
+<header>SAT Dashboard - MedLogic Style</header>
 
 <div class="container">
 
@@ -33,6 +41,7 @@ ul{padding-left:20px;text-align:left;}
     <li><a href="#" target="_blank">Math Notes PDF</a></li>
     <li><a href="#" target="_blank">English Practice</a></li>
   </ul>
+  <button class="materials-btn">Open</button>
 </div>
 
 <!-- Quizzes -->
@@ -40,17 +49,17 @@ ul{padding-left:20px;text-align:left;}
   <img src="https://i.imgur.com/5hVQfFZ.png" alt="Quizzes">
   <h2>Quizzes</h2>
   <p>Daily SAT Quiz</p>
-  <button onclick="startQuiz()">Start Quiz</button>
+  <button class="quiz-btn" onclick="startQuiz()">Start Quiz</button>
   <div id="quizResult" style="margin-top:10px;font-weight:bold;"></div>
 </div>
 
-<!-- Mistake Analog -->
+<!-- Mistakes -->
 <div class="block">
   <img src="https://i.imgur.com/X9d7TQr.png" alt="Mistakes">
   <h2>Mistake Analog</h2>
   <p>Record your mistakes</p>
   <input id="mistakeInput" type="text" placeholder="Enter mistake">
-  <button onclick="addMistake()">Add Mistake</button>
+  <button class="mistake-btn" onclick="addMistake()">Add Mistake</button>
   <ul id="mistakeList"></ul>
 </div>
 
@@ -59,8 +68,8 @@ ul{padding-left:20px;text-align:left;}
   <img src="https://i.imgur.com/3XYp25t.png" alt="Timer">
   <h2>Pomodoro Timer</h2>
   <h3 id="timer">25:00</h3>
-  <button onclick="startTimer()">Start</button>
-  <button onclick="resetTimer()">Reset</button>
+  <button class="timer-btn" onclick="startTimer()">Start</button>
+  <button class="timer-btn" onclick="resetTimer()">Reset</button>
 </div>
 
 <!-- To-Do List -->
@@ -68,7 +77,7 @@ ul{padding-left:20px;text-align:left;}
   <img src="https://i.imgur.com/Yy6Y8nY.png" alt="ToDo">
   <h2>To-Do List</h2>
   <input id="taskInput" type="text" placeholder="Enter task">
-  <button onclick="addTask()">Add Task</button>
+  <button class="task-btn" onclick="addTask()">Add Task</button>
   <ul id="taskList"></ul>
 </div>
 
@@ -77,13 +86,13 @@ ul{padding-left:20px;text-align:left;}
   <img src="https://i.imgur.com/ITvkhTL.png" alt="Notes">
   <h2>Notes</h2>
   <textarea id="notes" rows="6" placeholder="Write your notes..."></textarea>
-  <button onclick="saveNotes()">Save Notes</button>
+  <button class="notes-btn" onclick="saveNotes()">Save Notes</button>
 </div>
 
 </div>
 
 <script>
-// ====== Tasks ======
+// ===== Tasks =====
 function addTask(){
   let input=document.getElementById("taskInput");
   if(input.value==="") return;
@@ -126,7 +135,7 @@ window.onload=function(){
   if(savedNotes) document.getElementById("notes").value=savedNotes;
 }
 
-// ====== Mistakes ======
+// ===== Mistakes =====
 function addMistake(){
   let input=document.getElementById("mistakeInput");
   if(input.value==="") return;
@@ -139,7 +148,7 @@ function addMistake(){
   input.value="";
 }
 
-// ====== Pomodoro Timer ======
+// ===== Pomodoro =====
 let time=1500; let timerInterval;
 function startTimer(){
   clearInterval(timerInterval);
@@ -153,23 +162,21 @@ function startTimer(){
 }
 function resetTimer(){clearInterval(timerInterval);time=1500;document.getElementById("timer").innerText="25:00";}
 
-// ====== Notes ======
+// ===== Notes =====
 function saveNotes(){
   let notes=document.getElementById("notes").value;
   localStorage.setItem("notes",notes);
   alert("Notes saved!");
 }
 
-// ====== Quiz ======
+// ===== Quiz =====
 const quizQuestions=[
   {q:"Math Question 1?",options:["A","B","C"],answer:"A"},
   {q:"English Question 1?",options:["True","False"],answer:"True"},
   {q:"Math Question 2?",options:["A","B","C"],answer:"B"}
 ];
 let currentQ=0,score=0;
-function startQuiz(){
-  currentQ=0; score=0; showQuestion();
-}
+function startQuiz(){ currentQ=0; score=0; showQuestion(); }
 function showQuestion(){
   if(currentQ>=quizQuestions.length){document.getElementById("quizResult").innerText="Quiz Finished! Score: "+score+"/"+quizQuestions.length; localStorage.setItem("quizScore",score); return;}
   let q=quizQuestions[currentQ];
@@ -177,11 +184,7 @@ function showQuestion(){
   q.options.forEach(opt=>{html+="<button onclick=\"checkAnswer('"+opt+"')\">"+opt+"</button> "});
   document.getElementById("quizResult").innerHTML=html;
 }
-function checkAnswer(ans){
-  if(ans===quizQuestions[currentQ].answer) score++;
-  currentQ++;
-  showQuestion();
-}
+function checkAnswer(ans){ if(ans===quizQuestions[currentQ].answer) score++; currentQ++; showQuestion(); }
 </script>
 
 </body>
